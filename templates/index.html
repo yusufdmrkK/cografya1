@@ -2,49 +2,80 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Dünya Rehberi</title>
+    <title>Pokedex API</title>
     <style>
-        body { background-color: #eef2f3; font-family: 'Helvetica', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; width: 400px; padding: 25px; border-radius: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); text-align: center; }
-        .flag { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; border: 1px solid #ddd; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        h1 { margin: 20px 0 5px 0; color: #333; }
-        h3 { margin: 0 0 20px 0; color: #777; font-weight: normal; font-size: 14px; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; margin-bottom: 25px; }
-        .info-item { background: #f8f9fa; padding: 10px; border-radius: 8px; }
-        .label { font-size: 12px; color: #888; text-transform: uppercase; font-weight: bold; }
-        .value { font-size: 16px; color: #333; font-weight: 600; margin-top: 5px; }
-        .btn { display: inline-block; background: #007bff; color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; cursor: pointer; border: none; font-size: 16px; transition: 0.3s; }
-        .btn:hover { background: #0056b3; transform: scale(1.05); }
-        .map-link { display: block; margin-top: 15px; color: #007bff; text-decoration: none; font-size: 14px; }
+        body { background-color: #2a2a2a; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: white; }
+        .card { 
+            background-color: #333; 
+            width: 350px; 
+            border-radius: 20px; 
+            padding: 30px; 
+            text-align: center; 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            border-top: 10px solid {{ renk }}; /* Python'dan gelen renk */
+        }
+        .img-bg {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        img { width: 180px; height: auto; transition: transform 0.3s; }
+        img:hover { transform: scale(1.1); }
+        h1 { margin: 20px 0 10px; letter-spacing: 2px; }
+        .badge {
+            background-color: {{ renk }};
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .stats { display: flex; justify-content: space-around; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; }
+        .stat-box p { margin: 0; font-size: 12px; color: #aaa; }
+        .stat-box h3 { margin: 5px 0 0; }
+        button {
+            margin-top: 25px;
+            padding: 12px 30px;
+            background: white;
+            color: #333;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover { background: #ddd; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <img src="{{ bayrak }}" alt="Bayrak" class="flag">
-        <h1>{{ ad }}</h1>
-        <h3>{{ resmi_ad }}</h3>
-
-        <div class="info-grid">
-            <div class="info-item">
-                <div class="label">Başkent</div>
-                <div class="value">{{ baskent }}</div>
+        <div class="img-bg">
+            <img src="{{ resim }}" alt="{{ isim }}">
+        </div>
+        
+        <h1>{{ isim }}</h1>
+        <div class="badge">{{ tur }}</div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <p>BOY</p>
+                <h3>{{ boy }} m</h3>
             </div>
-            <div class="info-item">
-                <div class="label">Bölge</div>
-                <div class="value">{{ kita }}</div>
-            </div>
-            <div class="info-item">
-                <div class="label">Nüfus</div>
-                <div class="value">{{ nufus }}</div>
+            <div class="stat-box">
+                <p>AĞIRLIK</p>
+                <h3>{{ kilo }} kg</h3>
             </div>
         </div>
 
-        <a href="{{ harita_link }}" target="_blank" class="map-link">📍 Google Haritalar'da Gör</a>
-        <br>
-        
         <form action="">
-            <button class="btn" onclick="window.location.reload();">Yeni Ülke Keşfet</button>
+            <button onclick="window.location.reload();">Sıradaki Pokémon</button>
         </form>
     </div>
 
