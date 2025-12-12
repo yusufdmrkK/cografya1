@@ -6,14 +6,96 @@
     <style>
         body { background-color: #2a2a2a; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: white; }
         .card { 
-            background-color: #333; 
-            width: 350px; 
-            border-radius: 20px; 
-            padding: 30px; 
-            text-align: center; 
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-            border-top: 10px solid {{ renk }}; /* Python'dan gelen renk */
+            background-color: rgb(125, 149, 141);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0,
+    0, 0.5);
+            padding: 30px;
+            text-align: center;
+            width: 300px;
         }
+        .pokemon-card {
+    /* Geçişi yumuşatmak için */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+/* CSS */
+body {
+    /* Mavi ve Lacivert Tonlarda Renk Geçişi */
+    background: linear-gradient(-45deg, #0077be, #00bfff, #004d99, #00aaff); 
+    background-size: 400% 400%;
+    
+    /* Animasyon: 20 saniyede yavaş ve sonsuz tekrar */
+    animation: water-flow 20s ease infinite; 
+    
+    /* ... diğer body stilleri (ortalamalar vs.) */
+}
+
+@keyframes water-flow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+body {
+    background-image: url('water_pattern.png'); /* 30x30 piksel gibi küçük bir desen */
+    background-repeat: repeat; /* Desenin tüm alanı kaplaması için tekrarla */
+    background-size: auto; /* Desenin orijinal boyutunda kalmasını sağlar */
+    background-color: #0077be; /* Desen yoksa/bölünürse görülecek ana renk */
+
+    /* ... Diğer body stilleri */
+}/* CSS */
+body {
+    background-image: url('water_pattern.png'); /* 30x30 piksel gibi küçük bir desen */
+    background-repeat: repeat; /* Desenin tüm alanı kaplaması için tekrarla */
+    background-size: auto; /* Desenin orijinal boyutunda kalmasını sağlar */
+    background-color: #0077be; /* Desen yoksa/bölünürse görülecek ana renk */
+
+    /* ... Diğer body stilleri */
+}
+        body {
+    /* 1. Resmi ekle. 'url(...)' kısmına kendi resim dosyanızın yolunu yazın. */
+    background-image: url('poliwirl_arka_plan.jpg'); 
+    
+    /* 2. Resmin tüm ekranı kaplamasını sağlar. */
+    background-size: cover; 
+    
+    /* 3. Resmi sayfanın ortasına hizalar. */
+    background-position: center center; 
+    
+    /* 4. Sayfa kaydırılsa bile resmin sabit kalmasını sağlar. 
+       (Bu, genellikle havalı bir efekt verir.) */
+    background-attachment: fixed; 
+    
+    /* Alternatif olarak, arka plan resminin tekrarlanmamasını sağlayabilirsiniz (gerekiyorsa). */
+    /* background-repeat: no-repeat; */ 
+}
+body {
+    min-height: 100vh; /* Ekran yüksekliğinin tamamını kapla */
+    display: flex; /* Flexbox kullan */
+    justify-content: center; /* Yatayda ortala */
+    align-items: center; /* Dikeyde ortala */
+    margin: 0; /* Tarayıcıların varsayılan kenar boşluklarını sıfırla */
+    
+    /* Arka plan kodlarınız da buraya gelecek */
+}
+.pokemon-card:hover {
+    /* Kartı hafifçe yukarı kaldırır */
+    transform: translateY(-5px); 
+    /* Gölgelendirmeyi güçlendirir */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6); 
+}
+        .pokemon-card {
+    /* Hafif bir transparanlık */
+    background-color: rgba(255, 255, 255, 0.1); 
+    
+    /* Arka plandaki içeriği hafifçe bulanıklaştırır (Modern "cam" efekti) */
+    backdrop-filter: blur(5px); 
+}
         .img-bg {
             background-color: rgba(255,255,255,0.1);
             border-radius: 50%;
@@ -27,14 +109,15 @@
         img { width: 180px; height: auto; transition: transform 0.3s; }
         img:hover { transform: scale(1.1); }
         h1 { margin: 20px 0 10px; letter-spacing: 2px; }
+        
         .badge {
-            background-color: {{ renk }};
-            padding: 5px 15px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 14px;
             display: inline-block;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
             margin-bottom: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
         .stats { display: flex; justify-content: space-around; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; }
         .stat-box p { margin: 0; font-size: 12px; color: #aaa; }
