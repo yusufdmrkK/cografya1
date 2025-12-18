@@ -1,49 +1,100 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, session, request, redirect, url_for
 import requests
 import random
 
 app = Flask(__name__)
 
-@app.route('/')
+# Session (Hafıza) anahtarı
+app.secret_key = "pokedex_master_key_ash_ketchum"
+
+# Pokemon Türlerine Göre Renk Paleti (Neon Renkler)
+TYPE_COLORS = {
+    'fire': '#ff4422',      # Kırmızı
+    'water': '#3399ff',     # Mavi
+    'grass': '#77cc55',     # Yeşil
+    'electric': '#ffcc33',  # Sarı
+    'psychic': '#ff5599',   # Pembe
+    'ice': '#66ccff',       # Buz Mavisi
+    'dragon': '#7766ee',    # Mor
+    'dark': '#705848',      # Koyu Kahve
+    'fairy': '#ee99ac',     # Açık Pembe
+    'normal': '#aaaa99',    # Gri
+    'fighting': '#bb5544',  # Kiremit
+    'flying': '#8899ff',    # Gök Mavisi
+    'poison': '#aa5599',    # Mor
+    'ground': '#ddbb55',    # Toprak
+    'rock': '#bbaa66',      # Kaya
+    'bug': '#aabb22',       # Böcek Yeşili
+    'ghost': '#6666bb',     # Hayalet Moru
+    'steel': '#aaaabb'      # Çelik Grisi
+}
+
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    # 1. Nesil (Orijinal) pokemonlardan rastgele birini seç (1-151 arası)
-    poke_id = random.randint(1, 151)
+    if 'favoriler' not in session:
+        session['favoriler'] = []
+
+    # Rastgele Pokemon (1. Nesil ile 8. Nesil arası)
+    poke_id = random.randint(1, 898)
     url = f"https://pokeapi.co/api/v2/pokemon/{poke_id}"
     
     try:
-        # User-Agent ekliyoruz ki tarayıcı gibi görünsün
-        headers = {'User-Agent': 'Mozilla/5.0'}
-        response = requests.get(url, headers=headers)
-        
+        response = requests.get(url)
         if response.status_code == 200:
             data = response.json()
             
-            # Verileri ayıklama
-            isim = data['name'].upper()
-            resim = data['sprites']['other']['official-artwork']['front_default']
-            tur = data['types'][0]['type']['name'].upper()
-            boy = data['height'] / 10 # Metreye çevir
-            kilo = data['weight'] / 10 # Kg'ye çevir
+            # Verileri Ayıkla
+            tur_ingilizce = data['types'][0]['type']['name']
+            # Rengi sözlükten bul, yoksa gri yap
+            renk = TYPE_COLORS.get(tur_ingilizce, '#aaaa99')
             
-            # Türe göre renk ayarı
-            renk = "#333"
-            if "fire" in tur.lower(): renk = "#ff4422"
-            elif "grass" in tur.lower(): renk = "#77cc55"
-            elif "water" in tur.lower(): renk = "#3399ff"
-            elif "electric" in tur.lower(): renk = "#ffcc33"
-            
+            pokemon = {
+                'isim': data['name'].upper(),
+                'resim': data['sprites']['other']['official-artwork']['front_default'],
+                'tur': tur_ingilizce.upper(),
+                'boy': data['height'] / 10, # Metreye çevir
+                'kilo': data['weight'] / 10, # Kg'ye çevir
+                'renk': renk
+            }
+
             return render_template('index.html', 
-                                   isim=isim, 
-                                   resim=resim, 
-                                   tur=tur, 
-                                   boy=boy, 
-                                   kilo=kilo,
-                                   renk=renk)
+                                   pokemon=pokemon, 
+                                   favoriler=session['favoriler'])
         else:
-            return "API Hatası: Pokémon bulunamadı."
-            
+            return "API Hatası"
     except Exception as e:
-        return f"Bağlantı Hatası: {e}"
+        return f"Hata: {e}"
+
+# --- FAVORİ EKLEME ---
+@app.route('/favori-ekle', methods=['POST'])
+def favori_ekle():
+    yeni_fav = {
+        'isim': request.form['isim'],
+        'resim': request.form['resim'],
+        'tur': request.form['tur'],
+        'renk': request.form['renk']
+    }
+    
+    mevcut = session.get('favoriler', [])
+    
+    # Aynı Pokemon'u tekrar ekleme kontrolü
+    zaten_var = False
+    for p in mevcut:
+        if p['isim'] == yeni_fav['isim']:
+            zaten_var = True
+            break
+            
+    if not zaten_var:
+        mevcut.insert(0, yeni_fav)
+        session['favoriler'] = mevcut
+        
+    return redirect(url_for('home'))
+
+# --- TEMİZLEME ---
+@app.route('/temizle')
+def temizle():
+    session['favoriler'] = []
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
