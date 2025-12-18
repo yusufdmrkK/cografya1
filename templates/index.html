@@ -126,12 +126,57 @@
                     <button class="btn-scan">YENİ TARA</button>
                 </form>
 
-                <form action="/favori-ekle" method="post">
-                    <input type="hidden" name="isim" value="{{ pokemon.isim }}">
-                    <input type="hidden" name="resim" value="{{ pokemon.resim }}">
-                    <input type="hidden" name="tur" value="{{ pokemon.tur }}">
-                    <input type="hidden" name="renk" value="{{ pokemon.renk }}">
-                    <button class="btn-fav">★ VERİTABANINA KAYDET</button>
+                <div class="btn-group">
+    <button type="button" class="btn-scan" onclick="location.href='/'">YENİ TARA</button>
+
+    <button type="button" class="btn-fav" onclick="veritabaninaKaydet()">★ VERİTABANINA KAYDET</button>
+</div>
+
+<script>
+    // 1. Durum (State) Koruması: O an ekranda duran verileri hapsediyoruz
+    const mevcutPokemon = {
+        isim: "{{ pokemon.isim }}",
+        resim: "{{ pokemon.resim }}",
+        tur: "{{ pokemon.tur }}",
+        renk: "{{ pokemon.renk }}",
+        boy: "{{ pokemon.boy }}",
+        kilo: "{{ pokemon.kilo }}"
+    };
+
+    // 2. Arka Planda Kayıt Fonksiyonu (Fetch API)
+    async function veritabaninaKaydet() {
+        // fetch kullanarak sayfayı yenilemeden veriyi gönderiyoruz
+        const response = await fetch('/favori-ekle', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(mevcutPokemon)
+        });
+
+        if (response.ok) {
+            const güncelListe = await response.json();
+            // Sağdaki Poké-Bank panelini sayfa yenilenmeden güncelliyoruz
+            guncellePokeBank(güncelListe);
+            alert(mevcutPokemon.isim + " başarıyla kaydedildi!");
+        }
+    }
+
+    // 3. Sağdaki listeyi anlık güncelleyen fonksiyon
+    function guncellePokeBank(liste) {
+        const listArea = document.getElementById("fav-list-container"); // HTML'de listene bu id'yi ver
+        listArea.innerHTML = ""; // Mevcut listeyi temizle
+        
+        liste.forEach(p => {
+            listArea.innerHTML += `
+                <div class="fav-item" style="border-left: 3px solid ${p.renk};">
+                    <img src="${p.resim}" class="fav-img">
+                    <div class="fav-info">
+                        <h4>${p.isim}</h4>
+                        <span style="color: ${p.renk}">${p.tur}</span>
+                    </div>
+                </div>`;
+        });
+    }
+</script>
                 </form>
             </div>
         </div>
