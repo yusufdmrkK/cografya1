@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect, url_for
+from flask import Flask, render_template, session, request, jsonify, redirect, url_for
 import requests
 import random
 
@@ -7,94 +7,66 @@ app = Flask(__name__)
 # Session (Hafıza) anahtarı
 app.secret_key = "pokedex_master_key_ash_ketchum"
 
-# Pokemon Türlerine Göre Renk Paleti (Neon Renkler)
 TYPE_COLORS = {
-    'fire': '#ff4422',      # Kırmızı
-    'water': '#3399ff',     # Mavi
-    'grass': '#77cc55',     # Yeşil
-    'electric': '#ffcc33',  # Sarı
-    'psychic': '#ff5599',   # Pembe
-    'ice': '#66ccff',       # Buz Mavisi
-    'dragon': '#7766ee',    # Mor
-    'dark': '#705848',      # Koyu Kahve
-    'fairy': '#ee99ac',     # Açık Pembe
-    'normal': '#aaaa99',    # Gri
-    'fighting': '#bb5544',  # Kiremit
-    'flying': '#8899ff',    # Gök Mavisi
-    'poison': '#aa5599',    # Mor
-    'ground': '#ddbb55',    # Toprak
-    'rock': '#bbaa66',      # Kaya
-    'bug': '#aabb22',       # Böcek Yeşili
-    'ghost': '#6666bb',     # Hayalet Moru
-    'steel': '#aaaabb'      # Çelik Grisi
+    'fire': '#ff4422', 'water': '#3399ff', 'grass': '#77cc55',
+    'electric': '#ffcc33', 'psychic': '#ff5599', 'ice': '#66ccff',
+    'dragon': '#7766ee', 'dark': '#705848', 'fairy': '#ee99ac',
+    'normal': '#aaaa99', 'fighting': '#bb5544', 'flying': '#8899ff',
+    'poison': '#aa5599', 'ground': '#ddbb55', 'rock': '#bbaa66',
+    'bug': '#aabb22', 'ghost': '#6666bb', 'steel': '#aaaabb'
 }
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def home():
+    # Session başlatma
     if 'favoriler' not in session:
         session['favoriler'] = []
 
-    # Rastgele Pokemon (1. Nesil ile 8. Nesil arası)
+    # Rastgele Pokemon seç
     poke_id = random.randint(1, 898)
     url = f"https://pokeapi.co/api/v2/pokemon/{poke_id}"
     
     try:
         response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
-            
-            # Verileri Ayıkla
-            tur_ingilizce = data['types'][0]['type']['name']
-            # Rengi sözlükten bul, yoksa gri yap
-            renk = TYPE_COLORS.get(tur_ingilizce, '#aaaa99')
-            
-            pokemon = {
-                'isim': data['name'].upper(),
-                'resim': data['sprites']['other']['official-artwork']['front_default'],
-                'tur': tur_ingilizce.upper(),
-                'boy': data['height'] / 10, # Metreye çevir
-                'kilo': data['weight'] / 10, # Kg'ye çevir
-                'renk': renk
-            }
+        data = response.json()
+        tur_ingilizce = data['types'][0]['type']['name']
+        
+        pokemon = {
+            'isim': data['name'].upper(),
+            'resim': data['sprites']['other']['official-artwork']['front_default'],
+            'tur': tur_ingilizce.upper(),
+            'boy': data['height'] / 10,
+            'kilo': data['weight'] / 10,
+            'renk': TYPE_COLORS.get(tur_ingilizce, '#aaaa99')
+        }
 
-            return render_template('index.html', 
-                                   pokemon=pokemon, 
-                                   favoriler=session['favoriler'])
-        else:
-            return "API Hatası"
+        return render_template('index.html', pokemon=pokemon, favoriler=session['favoriler'])
     except Exception as e:
         return f"Hata: {e}"
 
-# --- FAVORİ EKLEME ---
+# --- FAVORİ EKLEME (Fetch API ile uyumlu) ---
 @app.route('/favori-ekle', methods=['POST'])
 def favori_ekle():
-    yeni_fav = {
-        'isim': request.form['isim'],
-        'resim': request.form['resim'],
-        'tur': request.form['tur'],
-        'renk': request.form['renk']
-    }
+    data = request.get_json() # JavaScript'ten gelen JSON verisini al
+    mevcut_favoriler = session.get('favoriler', [])
+
+    # Aynı Pokemon'un listede olup olmadığını kontrol et
+    if not any(p['isim'] == data['isim'] for p in mevcut_favoriler):
+        mevcut_favoriler.insert(0, data) # En başa ekle
+        session['favoriler'] = mevcut_favoriler
+        session.modified = True # Flask'a session'ın değiştiğini haber ver
     
-    mevcut = session.get('favoriler', [])
-    
-    # Aynı Pokemon'u tekrar ekleme kontrolü
-    zaten_var = False
-    for p in mevcut:
-        if p['isim'] == yeni_fav['isim']:
-            zaten_var = True
-            break
-            
-    if not zaten_var:
-        mevcut.insert(0, yeni_fav)
-        session['favoriler'] = mevcut
-        
-    return redirect(url_for('home'))
+    # Güncel listeyi JSON olarak döndür (Sayfa yenilenmesini engeller)
+    return jsonify(session['favoriler'])
 
 # --- TEMİZLEME ---
 @app.route('/temizle')
 def temizle():
     session['favoriler'] = []
-    return redirect(url_for('home'))
+    # Eğer fetch ile çağırıyorsan jsonify, butonla çağırıyorsan redirect yapmalısın
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.path == '/temizle':
+        return redirect(url_for('home'))
+    return jsonify([])
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True)
