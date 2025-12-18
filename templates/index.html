@@ -161,4 +161,46 @@
     </div>
 
 </body>
+    <div class="btn-group">
+    <button class="btn-scan" onclick="location.reload()">YENİ TARA</button>
+    <button class="btn-fav" onclick="veritabaninaKaydet()">★ VERİTABANINA KAYDET</button>
+</div>
+
+<script>
+// Hocanın istediği Stateful Veri Yapısı (JS tarafında da tutuyoruz)
+const suAnkiPokemon = {
+    isim: "{{ pokemon.isim }}",
+    resim: "{{ pokemon.resim }}",
+    tur: "{{ pokemon.tur }}",
+    renk: "{{ pokemon.renk }}"
+};
+
+async function veritabaninaKaydet() {
+    const response = await fetch('/kaydet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(suAnkiPokemon)
+    });
+
+    const guncelFavoriler = await response.json();
+    favoriListesiniGuncelle(guncelFavoriler);
+}
+
+function favoriListesiniGuncelle(liste) {
+    const listArea = document.querySelector(".fav-list");
+    listArea.innerHTML = ""; // Mevcut listeyi temizle
+
+    liste.forEach(p => {
+        listArea.innerHTML += `
+            <div class="fav-item" style="border-left: 3px solid ${p.renk};">
+                <img src="${p.resim}" class="fav-img">
+                <div class="fav-info">
+                    <h4>${p.isim}</h4>
+                    <span style="color: ${p.renk}">${p.tur}</span>
+                </div>
+            </div>
+        `;
+    });
+}
+</script>
 </html>
