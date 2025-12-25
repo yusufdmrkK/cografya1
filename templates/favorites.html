@@ -38,5 +38,27 @@
     <a href="index.html">Geri Dön</a>
 
     <script src="fav-script.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const listeKonteyner = document.getElementById('favori-listesi');
+        // LocalStorage'dan (my_favs anahtarıyla) verileri çekiyoruz
+        const favoriler = JSON.parse(localStorage.getItem('my_favs')) || [];
+
+        if (favoriler.length === 0) {
+            listeKonteyner.innerHTML = "<h3>Henüz favori eklemedin. Pokédex'e gidip kalp butonuna bas!</h3>";
+            return;
+        }
+
+        favoriler.forEach(pokemon => {
+            const kart = document.createElement('div');
+            kart.className = 'pokemon-kart';
+            kart.innerHTML = `
+                <img src="${pokemon.resim}" alt="${pokemon.ad}">
+                <h3>${pokemon.ad}</h3>
+            `;
+            listeKonteyner.appendChild(kart);
+        });
+    });
+</script>
 </body>
 </html>
