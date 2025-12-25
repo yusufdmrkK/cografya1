@@ -46,6 +46,42 @@
             background: radial-gradient(circle, {{ pokemon.renk }}33 0%, transparent 70%);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
         }
+        .controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#fav-btn {
+    background: #ff4757;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px #c44141;
+    transition: 0.2s;
+}
+
+#fav-btn:active {
+    box-shadow: 0 0px #c44141;
+    transform: translateY(4px);
+}
+
+.scan-btn {
+    /* Senin mevcut scan butonu stilin */
+    background: #222;
+    color: cyan;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px solid #000;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
         .img-container img { width: 140px; height: 140px; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); animation: hoverEffect 3s infinite ease-in-out; }
         @keyframes hoverEffect { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
@@ -65,3 +101,7 @@
             width: 100%; padding: 15px; border: none; border-radius: 10px; background: {{ pokemon.renk }}; color: #000;
             font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.2rem; cursor: pointer; transition: 0.3s;
             box-shadow: 0 0 20px {{ pokemon.renk }}66
+<div class="controls">
+    <button id="fav-btn" onclick="favoriyeEkle()">❤️</button>
+    <button class="scan-btn">SCAN ></button>
+</div>
