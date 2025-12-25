@@ -3,8 +3,6 @@ import requests
 import random
 
 app = Flask(__name__)
-
-# Session (Hafıza) anahtarı
 app.secret_key = "pokedex_master_key_ash_ketchum"
 
 TYPE_COLORS = {
@@ -18,29 +16,6 @@ TYPE_COLORS = {
 
 @app.route('/')
 def home():
-    # Session başlatma
-    if 'favoriler' not in session:
-        session['favoriler'] = []
-        function favoriyeEkle() {
-    // Ekranda o an hangi pokemon yazıyorsa onu alıyoruz
-    const pokemonAdi = document.querySelector('h2').innerText; 
-    const pokemonResmi = document.querySelector('.pokemon-img').src;
-
-    let favoriler = JSON.parse(localStorage.getItem('favoriPokemonlar')) || [];
-
-    // Eğer zaten ekli değilse ekle
-    const kontrol = favoriler.find(p => p.ad === pokemonAdi);
-    
-    if (!kontrol) {
-        favoriler.push({ ad: pokemonAdi, resim: pokemonResmi });
-        localStorage.setItem('favoriPokemonlar', JSON.stringify(favoriler));
-        alert(pokemonAdi + " favorilerine eklendi!");
-    } else {
-        alert("Bu Pokemon zaten listende!");
-    }
-}
-
-    # Rastgele Pokemon seç
     poke_id = random.randint(1, 898)
     url = f"https://pokeapi.co/api/v2/pokemon/{poke_id}"
     
@@ -57,34 +32,14 @@ def home():
             'kilo': data['weight'] / 10,
             'renk': TYPE_COLORS.get(tur_ingilizce, '#aaaa99')
         }
-
-        return render_template('index.html', pokemon=pokemon, favoriler=session['favoriler'])
+        return render_template('index.html', pokemon=pokemon)
     except Exception as e:
         return f"Hata: {e}"
 
-# --- FAVORİ EKLEME (Fetch API ile uyumlu) ---
-@app.route('/favori-ekle', methods=['POST'])
-def favori_ekle():
-    data = request.get_json() # JavaScript'ten gelen JSON verisini al
-    mevcut_favoriler = session.get('favoriler', [])
-
-    # Aynı Pokemon'un listede olup olmadığını kontrol et
-    if not any(p['isim'] == data['isim'] for p in mevcut_favoriler):
-        mevcut_favoriler.insert(0, data) # En başa ekle
-        session['favoriler'] = mevcut_favoriler
-        session.modified = True # Flask'a session'ın değiştiğini haber ver
-    
-    # Güncel listeyi JSON olarak döndür (Sayfa yenilenmesini engeller)
-    return jsonify(session['favoriler'])
-
-# --- TEMİZLEME ---
-@app.route('/temizle')
-def temizle():
-    session['favoriler'] = []
-    # Eğer fetch ile çağırıyorsan jsonify, butonla çağırıyorsan redirect yapmalısın
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.path == '/temizle':
-        return redirect(url_for('home'))
-    return jsonify([])
+# Favoriler Sayfası Rotası
+@app.route('/favorites')
+def favorites():
+    return render_template('favorites.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
