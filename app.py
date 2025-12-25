@@ -21,6 +21,24 @@ def home():
     # Session başlatma
     if 'favoriler' not in session:
         session['favoriler'] = []
+        function favoriyeEkle() {
+    // Ekranda o an hangi pokemon yazıyorsa onu alıyoruz
+    const pokemonAdi = document.querySelector('h2').innerText; 
+    const pokemonResmi = document.querySelector('.pokemon-img').src;
+
+    let favoriler = JSON.parse(localStorage.getItem('favoriPokemonlar')) || [];
+
+    // Eğer zaten ekli değilse ekle
+    const kontrol = favoriler.find(p => p.ad === pokemonAdi);
+    
+    if (!kontrol) {
+        favoriler.push({ ad: pokemonAdi, resim: pokemonResmi });
+        localStorage.setItem('favoriPokemonlar', JSON.stringify(favoriler));
+        alert(pokemonAdi + " favorilerine eklendi!");
+    } else {
+        alert("Bu Pokemon zaten listende!");
+    }
+}
 
     # Rastgele Pokemon seç
     poke_id = random.randint(1, 898)
