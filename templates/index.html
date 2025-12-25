@@ -2,44 +2,54 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neon Pokedex DB</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    
     <style>
-        /* --- GENEL AYARLAR --- */
         body {
             margin: 0; padding: 0; height: 100vh;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background-color: #0f0f1a; font-family: 'Roboto', sans-serif; overflow: hidden; color: white;
+            display: flex; justify-content: center; align-items: center;
+            background-color: #0f0f1a; /* Sayfa rengini garantiye aldık */
+            color: white; font-family: sans-serif;
         }
-
-        /* --- ARKA PLAN EFEKTLERİ --- */
-        .background-fx {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #240b36 0%, #0f0f1a 100%); z-index: -10;
-        }
-        .floating-pokeball {
-            position: absolute; width: 100px; height: 100px; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.1); background: transparent;
-            animation: floatUpRotate linear infinite; opacity: 0.3;
-        }
-        @keyframes floatUpRotate { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 50% { opacity: 0.4; } 100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
-        .fp1 { left: 10%; bottom: -100px; animation-duration: 15s; }
-        .fp2 { left: 80%; bottom: -100px; animation-duration: 25s; }
-
-        /* --- ANA KART (POKEDEX) --- */
         .card {
-            background: rgba(30, 30, 40, 0.6); backdrop-filter: blur(20px);
-            border-radius: 30px; padding: 40px; width: 320px;
-            text-align: center; position: relative;
-            border-top: 4px solid {{ pokemon.renk }};
-            box-shadow: 0 -10px 30px {{ pokemon.renk }}44, 0 20px 50px rgba(0,0,0,0.5);
+            background: #1e1e2a; /* Şeffaflığı şimdilik kaldırdık, görünsün diye */
+            border-top: 5px solid {{ pokemon.renk }};
+            border-radius: 20px; padding: 30px; width: 300px;
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+        .img-container img { width: 150px; height: 150px; }
+        .btn-group { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
+        #fav-btn { background: #ff4757; border: none; padding: 10px; border-radius: 50%; cursor: pointer; font-size: 20px; }
+        .scan-btn { background: {{ pokemon.renk }}; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="img-container">
+            <img src="{{ pokemon.resim }}" alt="pokemon">
+        </div>
+        <h1>{{ pokemon.isim }}</h1>
+        <p style="background: {{ pokemon.renk }}33; color: {{ pokemon.renk }}; display: inline-block; padding: 5px 15px; border-radius: 5px;">
+            {{ pokemon.tur }}
+        </p>
+        <div class="btn-group">
+            <button id="fav-btn" onclick="favoriyeEkle()">❤️</button>
+            <button class="scan-btn" onclick="location.reload()">SCAN ></button>
+        </div>
+        <br>
+        <a href="/favorites" style="color: #aaa; text-decoration: none; font-size: 12px;">FAVORİ LİSTESİ →</a>
+    </div>
 
-        .img-container {
-            width: 160px; height: 160px; margin: 0 auto 20px;
-            background: radial-gradient(circle, {{ pokemon.renk }}33 0%, transparent 70%);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .img-container img { width: 140px; height: 140px; animation:
+    <script>
+    function favoriyeEkle() {
+        const pName = "{{ pokemon.isim }}";
+        const pImg = "{{ pokemon.resim }}";
+        let favs = JSON.parse(localStorage.getItem('my_favs')) || [];
+        if (!favs.find(p => p.ad === pName)) {
+            favs.push({ ad: pName, resim: pImg });
+            localStorage.setItem('my_favs', JSON.stringify(favs));
+            alert(pName + " eklendi!");
+        } else { alert("Zaten listede!"); }
+    }
+    </script>
+</body>
+</html>
