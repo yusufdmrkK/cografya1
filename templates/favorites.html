@@ -2,53 +2,111 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Favori Pokemonlarım</title>
-    <link rel="stylesheet" href="fav-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Tasarımı Pokédex ile uyumlu hale getirdik */
+        body { 
+            background-color: #0f0f1a; 
+            color: white; 
+            font-family: 'sans-serif'; 
+            text-align: center; 
+            padding: 40px; 
+            margin: 0;
+        }
+
+        h1 { 
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 3rem; 
+            text-shadow: 0 0 20px #3399ff; 
+            margin-bottom: 40px;
+        }
+
+        /* Pokemonların dizileceği ızgara (Grid) */
+        .grid-konteyner { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+            gap: 25px; 
+            padding: 20px; 
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Favori Kartı Tasarımı */
+        .pokemon-kart { 
+            background: rgba(30, 30, 40, 0.8); 
+            padding: 20px; 
+            border-radius: 20px; 
+            border: 1px solid #3399ff; 
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .pokemon-kart:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 0 25px #3399ff66;
+            border-color: cyan;
+        }
+
+        .pokemon-kart img { 
+            width: 120px; 
+            height: 120px; 
+            object-fit: contain; 
+        }
+
+        .pokemon-kart h3 { 
+            font-family: 'Rajdhani', sans-serif;
+            margin-top: 15px; 
+            letter-spacing: 1px;
+            color: cyan;
+        }
+
+        /* Alt butonlar */
+        .nav-buttons { margin-top: 50px; display: flex; justify-content: center; gap: 20px; }
+
+        .btn {
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-family: 'Rajdhani', sans-serif;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .back-btn { border: 1px solid cyan; color: cyan; }
+        .back-btn:hover { background: cyan; color: black; }
+
+        .clear-btn { border: 1px solid #ff4757; color: #ff4757; background: transparent; }
+        .clear-btn:hover { background: #ff4757; color: white; }
+    </style>
 </head>
-  <style>
-    body {
-    background-color: #2c3e50;
-    color: white;
-    font-family: sans-serif;
-    text-align: center;
-}
-
-.grid-konteyner {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
-    padding: 40px;
-}
-
-.pokemon-kart {
-    background: #34495e;
-    padding: 15px;
-    border-radius: 15px;
-    border: 2px solid #ecf0f1;
-}
-
-.pokemon-kart img {
-    width: 100px;
-}
-  </style>
 <body>
-    <h1>🌟 Favori Pokemonlarım</h1>
+
+    <h1>🌟 FAVORİ KOLEKSİYONUM</h1>
+
     <div id="favori-listesi" class="grid-konteyner">
         </div>
-    <a href="index.html">Geri Dön</a>
 
-    <script src="fav-script.js"></script>
+    <div class="nav-buttons">
+        <a href="/" class="btn back-btn">← POKÉDEX'E DÖN</a>
+        <button onclick="listeyiTemizle()" class="btn clear-btn">LİSTEYİ SIFIRLA</button>
+    </div>
+
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const listeKonteyner = document.getElementById('favori-listesi');
-        // LocalStorage'dan (my_favs anahtarıyla) verileri çekiyoruz
+        
+        // Verileri 'my_favs' anahtarıyla çekiyoruz (index.html ile aynı olmalı)
         const favoriler = JSON.parse(localStorage.getItem('my_favs')) || [];
 
         if (favoriler.length === 0) {
-            listeKonteyner.innerHTML = "<h3>Henüz favori eklemedin. Pokédex'e gidip kalp butonuna bas!</h3>";
+            listeKonteyner.innerHTML = "<div style='grid-column: 1/-1;'><h3>Koleksiyonun henüz boş kanka. <br> Birkaç Pokemon yakalamaya ne dersin?</h3></div>";
             return;
         }
 
+        // Her favori pokemon için bir kart oluştur
         favoriler.forEach(pokemon => {
             const kart = document.createElement('div');
             kart.className = 'pokemon-kart';
@@ -59,6 +117,14 @@
             listeKonteyner.appendChild(kart);
         });
     });
-</script>
+
+    // Listeyi tamamen silme fonksiyonu
+    function listeyiTemizle() {
+        if(confirm("Tüm favori listeni silmek istediğine emin misin?")) {
+            localStorage.removeItem('my_favs');
+            location.reload();
+        }
+    }
+    </script>
 </body>
 </html>
