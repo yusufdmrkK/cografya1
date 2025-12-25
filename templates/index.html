@@ -24,84 +24,22 @@
             border: 2px solid rgba(255,255,255,0.1); background: transparent;
             animation: floatUpRotate linear infinite; opacity: 0.3;
         }
-        .floating-pokeball::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); }
-        .floating-pokeball::after { content: ''; position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; border-radius: 50%; transform: translate(-50%, -50%); border: 2px solid rgba(255,255,255,0.1); }
-        .fp1 { left: 10%; bottom: -100px; animation-duration: 15s; transform: scale(0.8); }
-        .fp2 { left: 80%; bottom: -100px; animation-duration: 25s; animation-delay: 2s; transform: scale(1.2); }
         @keyframes floatUpRotate { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 50% { opacity: 0.4; } 100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
+        .fp1 { left: 10%; bottom: -100px; animation-duration: 15s; }
+        .fp2 { left: 80%; bottom: -100px; animation-duration: 25s; }
 
-        /* --- ANA DÜZEN (LAYOUT) --- */
-        .main-container { display: flex; gap: 50px; align-items: center; z-index: 10; }
-
-        /* --- SOL KART (POKEMON) --- */
+        /* --- ANA KART (POKEDEX) --- */
         .card {
-            background: rgba(30, 30, 40, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 40px; width: 320px;
-            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;
+            background: rgba(30, 30, 40, 0.6); backdrop-filter: blur(20px);
+            border-radius: 30px; padding: 40px; width: 320px;
+            text-align: center; position: relative;
             border-top: 4px solid {{ pokemon.renk }};
             box-shadow: 0 -10px 30px {{ pokemon.renk }}44, 0 20px 50px rgba(0,0,0,0.5);
         }
+
         .img-container {
-            width: 160px; height: 160px; margin: 0 auto 20px; position: relative;
+            width: 160px; height: 160px; margin: 0 auto 20px;
             background: radial-gradient(circle, {{ pokemon.renk }}33 0%, transparent 70%);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            display: flex; align-items: center; justify-content: center;
         }
-        .controls {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 20px;
-}
-
-#fav-btn {
-    background: #ff4757;
-    border: none;
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 0 4px #c44141;
-    transition: 0.2s;
-}
-
-#fav-btn:active {
-    box-shadow: 0 0px #c44141;
-    transform: translateY(4px);
-}
-
-.scan-btn {
-    /* Senin mevcut scan butonu stilin */
-    background: #222;
-    color: cyan;
-    padding: 10px 20px;
-    border-radius: 10px;
-    border: 2px solid #000;
-    cursor: pointer;
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: bold;
-}
-        .img-container img { width: 140px; height: 140px; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); animation: hoverEffect 3s infinite ease-in-out; }
-        @keyframes hoverEffect { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-        h1 { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 2.5rem; margin: 10px 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px {{ pokemon.renk }}; }
-        .badge { display: inline-block; background: {{ pokemon.renk }}22; color: {{ pokemon.renk }}; padding: 8px 30px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; text-transform: uppercase; border: 1px solid {{ pokemon.renk }}; box-shadow: 0 0 15px {{ pokemon.renk }}44; margin-bottom: 25px; }
-
-        .stats-row { display: flex; justify-content: space-between; background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); }
-        .stat-item { flex: 1; }
-        .stat-item:first-child { border-right: 1px solid rgba(255,255,255,0.1); }
-        .stat-label { font-size: 0.8rem; color: #aaa; font-weight: bold; }
-        .stat-val { font-size: 1.4rem; font-family: 'Rajdhani', sans-serif; font-weight: 700; }
-
-        /* BUTON GRUBU */
-        .btn-group { display: flex; flex-direction: column; gap: 10px; }
-        
-        .btn-scan {
-            width: 100%; padding: 15px; border: none; border-radius: 10px; background: {{ pokemon.renk }}; color: #000;
-            font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.2rem; cursor: pointer; transition: 0.3s;
-            box-shadow: 0 0 20px {{ pokemon.renk }}66
-<div class="controls">
-    <button id="fav-btn" onclick="favoriyeEkle()">❤️</button>
-    <button class="scan-btn">SCAN ></button>
-</div>
+        .img-container img { width: 140px; height: 140px; animation:
